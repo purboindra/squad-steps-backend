@@ -10,4 +10,14 @@ export const registerOptionsSchema = z.object({
 
 export type RegisterOptionsSchema = z.infer<typeof registerOptionsSchema>;
 
-// 26.581.889
+export const verifyRegisterOptionsSchema = z.object({
+  email: emailSchemaWithPreprocessing,
+  id: z.string(),
+  rawId: z.string(),
+  clientDataJSON: z.string(),
+  attestationObject: z.string(),
+  type: z.string(),
+  transports: z.array(z.string()),
+});
+
+export type VerifyRegisterOptionsPayload = z.infer<typeof verifyRegisterOptionsSchema>;
