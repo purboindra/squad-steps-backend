@@ -55,7 +55,7 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
 
     const verification = await verifyRegistrationResponse({
       expectedChallenge: challange,
-      expectedOrigin: rp.origin,
+      expectedOrigin: [rp.origin, "android:apk-key-hash:FzpqiGKEgbNlWn_7Z0_PI4eV3F5ipUieKwRskGBLqaM"],
       response: response,
     });
   } catch (error) {

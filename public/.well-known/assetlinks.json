@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.purboyndradev.squadsteps", 
+      "sha256_cert_fingerprints": [
+        "17:3A:6A:8A:62:84:81:B3:65:5A:7F:FB:67:4F:CF:23:87:95:DC:5E:62:A5:48:9E:2B:04:6C:90:60:4B:A9:A3"
+      ]
+    }
+  }
+]

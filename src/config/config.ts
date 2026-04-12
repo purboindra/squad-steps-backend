@@ -8,6 +8,7 @@ interface Config {
   mongoDbUri: string;
   redisUri: string;
   ngrokAuthToken: string;
+  ngrokDomain: string;
 }
 
 const config: Config = {
@@ -16,6 +17,7 @@ const config: Config = {
   mongoDbUri: process.env.MONGO_DB_URI || "",
   redisUri: process.env.REDIS_URI || "",
   ngrokAuthToken: process.env.NGROK_AUTHTOKEN || "",
+  ngrokDomain: process.env.NGROK_DOMAIN || "",
 };
 
 export default config;
