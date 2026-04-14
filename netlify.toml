@@ -13,8 +13,14 @@
   external_node_modules = ["mongodb", "pino", "pino-pretty"]
 
 [[redirects]]
+  from = "/.well-known/*"
+  to = "/.well-known/:splat"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/.netlify/functions/api"
   status = 200
+
 
 
