@@ -1,3 +1,5 @@
+import config from "./config";
+
 interface RP {
   name: string;
   id: string;
@@ -5,7 +7,7 @@ interface RP {
 }
 
 export const rp: RP = {
-  name: "Squad Steps",
-  id: "squad-steps-backend.netlify.app",
-  origin: "https://squad-steps-backend.netlify.app",
+  name: config.rpName,
+  id: config.rpId,
+  origin: config.rpOrigin,
 };
