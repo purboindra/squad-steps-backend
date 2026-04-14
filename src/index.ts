@@ -8,7 +8,6 @@ import { logger } from "./logger";
 
 export const handler = serverless(app);
 
-
 async function start() {
   try {
     await redis.connect();
