@@ -1,4 +1,4 @@
-export const handler = async (event) => {
+export const handler = async (event: any) => {
   return {
     statusCode: 200,
     body: JSON.stringify({ message: "Hello from a minimal Netlify function!" }),
