@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as controller from "../controllers/registration.controller";
+import * as controller from "../controllers/passkeys.controller";
 import { registerOptionsSchema } from "../schemas/registerOptions.schema";
 import { validate } from "../schemas/validate";
 

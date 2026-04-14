@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { logger } from "../logger";
-import * as service from "../services/registration.service";
+import * as service from "../services/passkeys.service";
 import { errorToAppError } from "../utils/appError";
 
 export const generateRegisterOptions = async (req: Request, res: Response, next: NextFunction) => {

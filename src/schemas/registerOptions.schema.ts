@@ -18,6 +18,7 @@ export const verifyRegisterOptionsSchema = z.object({
   attestationObject: z.string(),
   type: z.string(),
   transports: z.array(z.string()),
+  clientExtensionResults: z.record(z.string(), z.any()).optional().default({}),
 });
 
 export type VerifyRegisterOptionsPayload = z.infer<typeof verifyRegisterOptionsSchema>;

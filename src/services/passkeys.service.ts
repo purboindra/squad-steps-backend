@@ -8,6 +8,7 @@ import { rp } from "../config/rp";
 import redis from "../lib/redis";
 import { logger } from "../logger";
 import type { VerifyRegisterOptionsPayload } from "../schemas/registerOptions.schema";
+import { AppError } from "../utils/appError";
 
 export const generateRegisterOptions = async (email: string) => {
   const options: PublicKeyCredentialCreationOptionsJSON = await generateRegistrationOptions({
@@ -43,13 +44,14 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
     logger.info({ challange }, "Challange from redis");
 
     const response: RegistrationResponseJSON = {
-      clientExtensionResults: {},
+      clientExtensionResults: payload.clientExtensionResults,
       id: payload.id,
       rawId: payload.rawId,
-      type: "public-key",
+      type: "public-key" as const,
       response: {
         clientDataJSON: payload.clientDataJSON,
         attestationObject: payload.attestationObject,
+        transports: payload.transports as any,
       },
     };
 
@@ -57,7 +59,19 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
       expectedChallenge: challange,
       expectedOrigin: [rp.origin, "android:apk-key-hash:FzpqiGKEgbNlWn_7Z0_PI4eV3F5ipUieKwRskGBLqaM"],
       response: response,
+      expectedRPID: rp.id,
     });
+
+    const isVerified = verification.verified;
+    const registrationInfo = verification.registrationInfo;
+
+    const isValidRegistration = isVerified && registrationInfo !== undefined;
+
+    if (isValidRegistration) {
+      return verification;
+    }
+
+    throw new AppError("Registration verification failed", 400);
   } catch (error) {
     logger.error({ error }, "Error verify registration options");
     throw error;
