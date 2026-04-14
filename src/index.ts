@@ -1,31 +1,13 @@
 import ngrok from "@ngrok/ngrok";
-import express from "express";
-import path from "path";
+import serverless from "serverless-http";
+import app from "./app";
 import config from "./config/config";
 import db from "./db/conn";
 import redis from "./lib/redis";
 import { logger } from "./logger";
-import { errorHandler } from "./middlewares/error.middleware";
-import authRoute from "./routes/auth.route";
 
-const app = express();
+export const handler = serverless(app);
 
-app.use(express.json());
-
-app.use(errorHandler);
-
-app.use("/api/auth/passkeys", authRoute);
-
-app.use("/.well-known", express.static(path.join(process.cwd(), "public", ".well-known")));
-app.get("/", (_req, res) => {
-  res.status(200).json({ message: "Hello World Deymmn" });
-  return;
-});
-
-app.use((_req, res) => {
-  res.status(404).json({ message: "Not Found" });
-  return;
-});
 
 async function start() {
   try {
