@@ -6,6 +6,6 @@ interface RP {
 
 export const rp: RP = {
   name: "Squad Steps",
-  id: "suzi-subdeltaic-ariah.ngrok-free.dev",
-  origin: "https://suzi-subdeltaic-ariah.ngrok-free.dev",
+  id: "squad-steps-backend.netlify.app",
+  origin: "https://squad-steps-backend.netlify.app",
 };
