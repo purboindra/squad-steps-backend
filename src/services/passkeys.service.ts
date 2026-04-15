@@ -38,7 +38,7 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
     const challange = await redis.get(`challenge_${payload.email}`);
 
     if (!challange) {
-      throw new Error("Challange not found");
+      throw new AppError("Challange not found", 404);
     }
 
     logger.info({ challange }, "Challange from redis");
