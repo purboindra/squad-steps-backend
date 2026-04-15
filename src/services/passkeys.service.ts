@@ -35,6 +35,7 @@ export const generateRegisterOptions = async (email: string) => {
 
 export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayload) => {
   try {
+    logger.info({ email: payload.email }, "Payload from verifyRegisterOptions");
     const challange = await redis.get(`challenge_${payload.email}`);
 
     if (!challange) {
