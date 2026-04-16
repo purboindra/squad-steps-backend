@@ -59,7 +59,8 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
       expectedOrigin: [
         rp.origin,
         "https://squad-steps-backend.netlify.app",
-        "android:apk-key-hash:FzpqiGKEgbNlWn_7Z0_PI4eV3F5ipUieKwRskGBLqaM",
+        "https://ba445f89--squad-steps-backend.netlify.live",
+        "android:apk-key-hash:FzpqimKEgbNlWn_7Z0_PI4eV3F5ipUieKwRskGBLqaM",
       ],
       expectedRPID: rp.id,
       response: response,
@@ -71,6 +72,8 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
     const isValidRegistration = isVerified && registrationInfo !== undefined;
 
     if (isValidRegistration) {
+      /// Delete challenge after use
+      await redis.del(`challenge_${payload.email}`);
       return verification;
     }
 

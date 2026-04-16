@@ -21,9 +21,12 @@ const config: Config = {
   redisUri: process.env.REDIS_URI || "",
   ngrokAuthToken: process.env.NGROK_AUTHTOKEN || "",
   ngrokDomain: process.env.NGROK_DOMAIN || "",
-  rpId: process.env.RP_ID || "squad-steps-backend.netlify.app",
-  rpName: process.env.RP_NAME || "Squad Steps",
-  rpOrigin: process.env.RP_ORIGIN || "https://squad-steps-backend.netlify.app",
+  // rpId: process.env.RP_ID || "squad-steps-backend.netlify.app",
+  // rpName: process.env.RP_NAME || "Squad Steps",
+  // rpOrigin: process.env.RP_ORIGIN || "https://squad-steps-backend.netlify.app",
+  rpOrigin: "https://ba445f89--squad-steps-backend.netlify.live",
+  rpId: "ba445f89--squad-steps-backend.netlify.live",
+  rpName: "Squad Steps",
 };
 
 export default config;
