@@ -56,7 +56,12 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
 
     const verification = await verifyRegistrationResponse({
       expectedChallenge: challange,
-      expectedOrigin: [rp.origin, "android:apk-key-hash:FzpqiGKEgbNlWn_7Z0_PI4eV3F5ipUieKwRskGBLqaM"],
+      expectedOrigin: [
+        rp.origin,
+        "https://squad-steps-backend.netlify.app",
+        "android:apk-key-hash:FzpqiGKEgbNlWn_7Z0_PI4eV3F5ipUieKwRskGBLqaM",
+      ],
+      expectedRPID: rp.id,
       response: response,
     });
 
