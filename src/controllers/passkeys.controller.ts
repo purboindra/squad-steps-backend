@@ -22,18 +22,9 @@ export const generateRegisterOptions = async (req: Request, res: Response, next:
 
 export const verifyRegisterOptions = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, id, rawId, clientDataJSON, attestationObject, transports, clientExtensionResults } = req.body;
+    logger.debug({ body: req.body }, "Body from verifyRegisterOptions");
 
-    const options = await service.verifyRegisterOptions({
-      email: email as string,
-      id: id as string,
-      rawId: rawId as string,
-      clientDataJSON: clientDataJSON as string,
-      attestationObject: attestationObject as string,
-      transports: transports as string[],
-      clientExtensionResults,
-      type: "public-key" as const,
-    });
+    const options = await service.verifyRegisterOptions(req.body);
 
     logger.info({ options }, "Options verified successfully");
 
