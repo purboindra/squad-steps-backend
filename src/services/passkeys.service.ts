@@ -58,7 +58,6 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
       expectedChallenge: challange,
       expectedOrigin: [rp.origin, "android:apk-key-hash:FzpqiGKEgbNlWn_7Z0_PI4eV3F5ipUieKwRskGBLqaM"],
       response: response,
-      expectedRPID: rp.id,
     });
 
     const isVerified = verification.verified;
