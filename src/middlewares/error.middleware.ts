@@ -6,7 +6,10 @@ import { AppError } from "../utils/appError";
 export function errorHandler(err: unknown, req: Request, res: Response, _next: NextFunction) {
   const appErr = err instanceof AppError ? err : new AppError("Internal server error", 500);
 
-  logger.error({ appErr }, "Error caught ing errorHandler middleware");
+  logger.error(
+    { error: appErr, url: req.url, method: req.method, body: req.body, path: req.path },
+    "Error caught ing errorHandler middleware",
+  );
 
   if (req.method === "POST") {
     const body = req.body;

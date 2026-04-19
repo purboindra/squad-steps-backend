@@ -1,9 +1,7 @@
 import { Router } from "express";
 import * as controller from "../controllers/passkeys.controller";
-import {
-  registerOptionsSchema,
-  verifyRegisterOptionsSchema,
-} from "../schemas/registerOptions.schema";
+import { emailSchema } from "../schemas/passkeys.schema";
+import { registerOptionsSchema } from "../schemas/registerOptions.schema";
 import { validate } from "../schemas/validate";
 
 const router = Router();
@@ -17,11 +15,19 @@ router.post(
 );
 
 router.post(
-  "/register/verify",
+  "/generate/options",
   validate({
-    body: verifyRegisterOptionsSchema,
+    body: emailSchema,
   }),
-  controller.verifyRegisterOptions,
+  controller.generateAuthOptions,
+);
+
+router.post(
+  "/get/options",
+  validate({
+    body: emailSchema,
+  }),
+  controller.getPasskeyOptions,
 );
 
 export default router;

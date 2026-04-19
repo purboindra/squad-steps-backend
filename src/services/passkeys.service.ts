@@ -1,14 +1,17 @@
 import {
+  generateAuthenticationOptions,
   generateRegistrationOptions,
   verifyRegistrationResponse,
   type PublicKeyCredentialCreationOptionsJSON,
+  type PublicKeyCredentialRequestOptionsJSON,
   type RegistrationResponseJSON,
 } from "@simplewebauthn/server";
 import { rp } from "../config/rp";
 import redis from "../lib/redis";
 import { logger } from "../logger";
-import type { VerifyRegisterOptionsPayload } from "../schemas/registerOptions.schema";
+import type { VerifyRegisterOptionsPayload } from "../schemas/user.schema";
 import { AppError } from "../utils/appError";
+import * as usersService from "./users.service";
 
 export const generateRegisterOptions = async (email: string) => {
   const options: PublicKeyCredentialCreationOptionsJSON = await generateRegistrationOptions({
@@ -66,6 +69,8 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
       response: response,
     });
 
+    logger.info({ verification }, "Verification result");
+
     const isVerified = verification.verified;
     const registrationInfo = verification.registrationInfo;
 
@@ -74,12 +79,61 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
     if (isValidRegistration) {
       /// Delete challenge after use
       await redis.del(`challenge_${payload.email}`);
-      return verification;
+      return registrationInfo;
     }
 
     throw new AppError("Registration verification failed", 400);
   } catch (error) {
     logger.error({ error }, "Error verify registration options");
+    throw error;
+  }
+};
+
+export const generateAuthOptions = async (email: string) => {
+  try {
+    const user = await usersService.getUserByEmail(email);
+
+    if (!user) throw new AppError("User not found", 404);
+
+    const options: PublicKeyCredentialRequestOptionsJSON = await generateAuthenticationOptions({
+      rpID: rp.id,
+      userVerification: "preferred",
+      allowCredentials: user.passkeys.map((passkey: any) => ({
+        id: passkey.credentialID,
+        transports: passkey.transports as any,
+      })),
+    });
+
+    logger.info({ options }, "Response options");
+
+    await redis.set(`login_challenge_${email}`, options.challenge, { EX: 60 * 5 });
+
+    return options;
+  } catch (error) {
+    logger.error({ error }, "Error generate auth options");
+    throw error;
+  }
+};
+
+export const getPasskeyOptions = async (email: string) => {
+  try {
+    const user = await usersService.getUserByEmail(email);
+
+    if (!user) {
+      const options = await generateRegisterOptions(email);
+      return {
+        type: "REGISTER",
+        options,
+      };
+    }
+
+    const options = await generateAuthOptions(email);
+    return {
+      type: "LOGIN",
+      options,
+    };
+  } catch (error) {
+    logger.error({ error }, "Error passkeys options");
     throw error;
   }
 };

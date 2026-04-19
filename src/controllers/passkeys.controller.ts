@@ -38,3 +38,37 @@ export const verifyRegisterOptions = async (req: Request, res: Response, next: N
     next(errorToAppError(error));
   }
 };
+
+export const generateAuthOptions = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.body;
+
+    const response = await service.generateAuthOptions(email);
+
+    res.status(201).json({
+      message: "Options generated successfully",
+      data: response,
+      success: true,
+    });
+  } catch (error) {
+    logger.error({ error }, "Error generate auth options");
+    next(errorToAppError(error));
+  }
+};
+
+export const getPasskeyOptions = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.body;
+
+    const response = await service.getPasskeyOptions(email);
+
+    res.status(200).json({
+      message: "Options fetched successfully",
+      data: response,
+      success: true,
+    });
+  } catch (error) {
+    logger.error({ error }, "Error get passkey options");
+    next(errorToAppError(error));
+  }
+};

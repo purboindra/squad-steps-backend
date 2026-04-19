@@ -1,15 +1,16 @@
 import express from "express";
 import path from "path";
 import { errorHandler } from "./middlewares/error.middleware";
-import authRoute from "./routes/passkeys.route";
+import passkeyRoute from "./routes/passkeys.route";
+import userRoute from "./routes/users.route";
 
 const app = express();
 
 app.use(express.json());
 
-app.use("/api/auth/passkeys", authRoute);
+app.use("/api/auth/passkeys", passkeyRoute);
+app.use("/api/users", userRoute);
 
-// Use a more robust path for public assets, or rely on Netlify's static serving
 const publicDir = path.join(process.cwd(), "public");
 app.use("/.well-known", express.static(path.join(publicDir, ".well-known")));
 
