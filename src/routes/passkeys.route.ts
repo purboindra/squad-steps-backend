@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as controller from "../controllers/passkeys.controller";
+import { verifyResponseAuthOptionsSchema } from "../schemas/auth.schema";
 import { emailSchema } from "../schemas/passkeys.schema";
 import { registerOptionsSchema } from "../schemas/registerOptions.schema";
 import { validate } from "../schemas/validate";
@@ -28,6 +29,14 @@ router.post(
     body: emailSchema,
   }),
   controller.getPasskeyOptions,
+);
+
+router.post(
+  "/verify/response",
+  validate({
+    body: verifyResponseAuthOptionsSchema,
+  }),
+  controller.verifyAuthResponse,
 );
 
 export default router;

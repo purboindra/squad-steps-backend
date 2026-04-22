@@ -1,14 +1,20 @@
 import {
   generateAuthenticationOptions,
   generateRegistrationOptions,
+  verifyAuthenticationResponse,
   verifyRegistrationResponse,
+  type AuthenticationResponseJSON,
+  type AuthenticatorAssertionResponseJSON,
+  type AuthenticatorTransportFuture,
   type PublicKeyCredentialCreationOptionsJSON,
   type PublicKeyCredentialRequestOptionsJSON,
   type RegistrationResponseJSON,
+  type WebAuthnCredential,
 } from "@simplewebauthn/server";
 import { rp } from "../config/rp";
 import redis from "../lib/redis";
 import { logger } from "../logger";
+import type { VerifyAuthOptionsPayload } from "../schemas/auth.schema";
 import type { VerifyRegisterOptionsPayload } from "../schemas/user.schema";
 import { AppError } from "../utils/appError";
 import * as usersService from "./users.service";
@@ -134,6 +140,68 @@ export const getPasskeyOptions = async (email: string) => {
     };
   } catch (error) {
     logger.error({ error }, "Error passkeys options");
+    throw error;
+  }
+};
+
+export const verifyAuthResponse = async (email: string, payload: VerifyAuthOptionsPayload) => {
+  try {
+    const challenge = await redis.get(`login_challenge_${email}`);
+
+    if (!challenge) {
+      throw new AppError("Challenge not found", 404);
+    }
+
+    const user = await usersService.getUserByEmail(email);
+
+    if (!user) throw new AppError("User not found", 404);
+
+    const passkey = user.passkeys.find((p) => p.credentialID === payload.id);
+
+    if (!passkey) throw new AppError("Passkey not recognized", 401);
+
+    const credential: WebAuthnCredential = {
+      counter: passkey.counter,
+      id: passkey.credentialID,
+      publicKey: new Uint8Array(passkey.publicKey.buffer),
+      transports: passkey.transports as AuthenticatorTransportFuture[],
+    };
+
+    const response: AuthenticationResponseJSON = {
+      clientExtensionResults: payload.clientExtensionResults,
+      id: payload.id,
+      rawId: payload.rawId,
+      type: "public-key" as const,
+      response: {
+        clientDataJSON: payload.response.clientDataJSON,
+        signature: payload.response.signature,
+        authenticatorData: payload.response.authenticatorData,
+      } as AuthenticatorAssertionResponseJSON,
+    };
+
+    const verification = await verifyAuthenticationResponse({
+      credential: credential,
+      expectedChallenge: challenge,
+      expectedOrigin: [
+        rp.origin,
+        "https://squad-steps-backend.netlify.app",
+        "https://ba445f89--squad-steps-backend.netlify.live",
+        "android:apk-key-hash:FzpqimKEgbNlWn_7Z0_PI4eV3F5ipUieKwRskGBLqaM",
+      ],
+      expectedRPID: rp.id,
+      response: response,
+    });
+
+    logger.info({ verification }, "Verification result");
+
+    if (verification.verified) {
+      const { newCounter } = verification.authenticationInfo;
+      return verification.authenticationInfo;
+    }
+
+    throw new AppError("Authentication verification failed", 400);
+  } catch (error) {
+    logger.error({ error }, "Error verify auth options");
     throw error;
   }
 };

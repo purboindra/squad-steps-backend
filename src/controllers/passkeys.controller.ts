@@ -72,3 +72,19 @@ export const getPasskeyOptions = async (req: Request, res: Response, next: NextF
     next(errorToAppError(error));
   }
 };
+
+export const verifyAuthResponse = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, options } = req.body;
+
+    const response = await service.verifyAuthResponse(email, options);
+
+    res.status(201).json({
+      message: "Login successfully",
+      data: response,
+      success: true,
+    });
+  } catch (error) {
+    next(errorToAppError(error));
+  }
+};
