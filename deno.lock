@@ -26,6 +26,7 @@
         "npm:express-rate-limit@^8.3.2",
         "npm:express@^5.2.1",
         "npm:install@0.13",
+        "npm:jose@^6.2.2",
         "npm:mongodb@^7.1.1",
         "npm:nodemon@^3.1.14",
         "npm:pino-pretty@^13.1.3",
