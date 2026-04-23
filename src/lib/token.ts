@@ -5,15 +5,17 @@ const JWT_SECRET = process.env.JWT_SECRET || "default_super_secret_key_change_in
 const secret = new TextEncoder().encode(JWT_SECRET);
 
 export const generateTokens = async (payload: GenerateTokenPayload) => {
-  const accessToken = await new jose.SignJWT(payload)
+  const accessToken = new jose.SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("15m")
     .sign(secret);
 
-  const refreshToken = await generateRefreshToken(payload);
+  const refreshToken = generateRefreshToken(payload);
 
-  return { accessToken, refreshToken };
+  const [accessTokenResult, refreshTokenResult] = await Promise.all([accessToken, refreshToken]);
+
+  return { accessToken: accessTokenResult, refreshToken: refreshTokenResult };
 };
 
 export const generateRefreshToken = async (payload: GenerateTokenPayload) => {

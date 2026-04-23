@@ -79,9 +79,18 @@ export const verifyAuthResponse = async (req: Request, res: Response, next: Next
 
     const response = await service.verifyAuthResponse(email, options);
 
+    const { access_token, refresh_token } = response;
+
+    const data = {
+      access_token,
+      refresh_token,
+    };
+
+    logger.info({ data }, "Data to be sent to client");
+
     res.status(201).json({
       message: "Login successfully",
-      data: response,
+      data: data,
       success: true,
     });
   } catch (error) {

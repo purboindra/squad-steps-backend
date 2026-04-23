@@ -13,11 +13,11 @@ import {
 } from "@simplewebauthn/server";
 import { rp } from "../config/rp";
 import redis from "../lib/redis";
+import { generateTokens } from "../lib/token";
 import { logger } from "../logger";
 import type { VerifyAuthOptionsPayload } from "../schemas/auth.schema";
 import type { VerifyRegisterOptionsPayload } from "../schemas/user.schema";
 import { AppError } from "../utils/appError";
-import { generateTokens } from "../lib/token";
 import * as usersService from "./users.service";
 
 export const generateRegisterOptions = async (email: string) => {
@@ -196,18 +196,22 @@ export const verifyAuthResponse = async (email: string, payload: VerifyAuthOptio
     logger.info({ verification }, "Verification result");
 
     if (verification.verified) {
+      await redis.del(`login_challenge_${email}`);
+
       const { newCounter } = verification.authenticationInfo;
 
       await usersService.updatePasskeyCounter(email, payload.id, newCounter);
 
       const tokens = await generateTokens({ email: user.email, username: user.username });
 
-      // Save refresh token to DB
+      logger.info({ tokens }, "Tokens generated");
+
       await usersService.saveRefreshToken(email, tokens.refreshToken);
 
       return {
         authenticationInfo: verification.authenticationInfo,
-        ...tokens,
+        access_token: tokens.accessToken,
+        refresh_token: tokens.refreshToken,
       };
     }
 

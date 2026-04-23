@@ -14,18 +14,18 @@ process.on("unhandledRejection", (err: any) => {
   if (isProd) process.exit(1);
 });
 
-["SIGINT", "SIGTERM"].forEach((sig) => {
-  process.on(sig as NodeJS.Signals, async () => {
-    logger.info({ sig }, "Shutting down");
-    try {
-      await redis.quit();
-    } catch {}
-    try {
-      await db.client.close();
-    } catch {}
-    process.exit(0);
-  });
-});
+// ["SIGINT", "SIGTERM"].forEach((sig) => {
+//   process.on(sig as NodeJS.Signals, async () => {
+//     logger.info({ sig }, "Shutting down");
+//     try {
+//       await redis.quit();
+//     } catch {}
+//     try {
+//       await db.client.close();
+//     } catch {}
+//     process.exit(0);
+//   });
+// });
 
 async function start() {
   try {
