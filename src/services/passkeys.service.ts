@@ -21,11 +21,13 @@ import { AppError } from "../utils/appError";
 import * as usersService from "./users.service";
 
 export const generateRegisterOptions = async (email: string) => {
+  const displayName = email.split("@")[0];
+
   const options: PublicKeyCredentialCreationOptionsJSON = await generateRegistrationOptions({
     rpName: rp.name,
     rpID: rp.id,
     userName: email,
-    userDisplayName: email,
+    userDisplayName: displayName,
     attestationType: "none",
     authenticatorSelection: {
       residentKey: "preferred",
@@ -35,6 +37,8 @@ export const generateRegisterOptions = async (email: string) => {
     timeout: 60000,
     excludeCredentials: [],
   });
+
+  logger.info({ rp }, "RP IS");
 
   logger.info({ options }, "Response options");
 
@@ -64,14 +68,11 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
       },
     };
 
+    logger.info({ origin: rp.origin }, "RP Origin is");
+
     const verification = await verifyRegistrationResponse({
       expectedChallenge: challange,
-      expectedOrigin: [
-        rp.origin,
-        "https://squad-steps-backend.netlify.app",
-        "https://ba445f89--squad-steps-backend.netlify.live",
-        "android:apk-key-hash:FzpqimKEgbNlWn_7Z0_PI4eV3F5ipUieKwRskGBLqaM",
-      ],
+      expectedOrigin: rp.origin,
       expectedRPID: rp.id,
       response: response,
     });
@@ -183,12 +184,7 @@ export const verifyAuthResponse = async (email: string, payload: VerifyAuthOptio
     const verification = await verifyAuthenticationResponse({
       credential: credential,
       expectedChallenge: challenge,
-      expectedOrigin: [
-        rp.origin,
-        "https://squad-steps-backend.netlify.app",
-        "https://ba445f89--squad-steps-backend.netlify.live",
-        "android:apk-key-hash:FzpqimKEgbNlWn_7Z0_PI4eV3F5ipUieKwRskGBLqaM",
-      ],
+      expectedOrigin: rp.origin,
       expectedRPID: rp.id,
       response: response,
     });

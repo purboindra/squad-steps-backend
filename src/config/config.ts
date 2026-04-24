@@ -11,7 +11,7 @@ interface Config {
   ngrokDomain: string;
   rpId: string;
   rpName: string;
-  rpOrigin: string;
+  rpOrigin: string[];
 }
 
 const config: Config = {
@@ -24,9 +24,9 @@ const config: Config = {
   // rpId: process.env.RP_ID || "squad-steps-backend.netlify.app",
   // rpName: process.env.RP_NAME || "Squad Steps",
   // rpOrigin: process.env.RP_ORIGIN || "https://squad-steps-backend.netlify.app",
-  rpOrigin: "https://ba445f89--squad-steps-backend.netlify.live",
-  rpId: "ba445f89--squad-steps-backend.netlify.live",
-  rpName: "Squad Steps",
+  rpOrigin: process.env.RP_ORIGIN?.split(",") || [],
+  rpId: process.env.RP_ID || "",
+  rpName: process.env.RP_NAME || "",
 };
 
 export default config;

@@ -3,7 +3,7 @@ import config from "./config";
 interface RP {
   name: string;
   id: string;
-  origin: string;
+  origin: string[];
 }
 
 export const rp: RP = {
