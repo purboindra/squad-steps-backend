@@ -12,6 +12,8 @@ interface Config {
   rpId: string;
   rpName: string;
   rpOrigin: string[];
+  dbName: string;
+  usersCollection: string;
 }
 
 const config: Config = {
@@ -27,6 +29,8 @@ const config: Config = {
   rpOrigin: process.env.RP_ORIGIN?.split(",") || [],
   rpId: process.env.RP_ID || "",
   rpName: process.env.RP_NAME || "",
+  dbName: process.env.DB_NAME || "",
+  usersCollection: process.env.USERS_COLLECTION || "",
 };
 
 export default config;

@@ -68,8 +68,6 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
       },
     };
 
-    logger.info({ origin: rp.origin }, "RP Origin is");
-
     const verification = await verifyRegistrationResponse({
       expectedChallenge: challange,
       expectedOrigin: rp.origin,
@@ -87,6 +85,7 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
     if (isValidRegistration) {
       /// Delete challenge after use
       await redis.del(`challenge_${payload.email}`);
+
       return registrationInfo;
     }
 

@@ -45,3 +45,39 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
     next(errorToAppError(error));
   }
 };
+
+export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = String(req.params.id);
+
+    const result = await userService.deleteUser(id);
+
+    logger.info({ result }, "Result from delete user controller");
+
+    res.status(200).json({
+      message: "User deleted successfully",
+      data: null,
+      success: true,
+    });
+  } catch (error) {
+    logger.error({ error }, "Error while delete user controller");
+    next(errorToAppError(error));
+  }
+};
+
+export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await userService.getAllUsers();
+
+    logger.info({ result }, "Result from get all users controller");
+
+    res.status(200).json({
+      message: "Users fetched successfully",
+      data: result,
+      success: true,
+    });
+  } catch (error) {
+    logger.error({ error }, "Error while get all users controller");
+    next(errorToAppError(error));
+  }
+};
