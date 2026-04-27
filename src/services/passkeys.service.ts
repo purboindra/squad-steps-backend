@@ -57,13 +57,13 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
     }
 
     const response: RegistrationResponseJSON = {
-      clientExtensionResults: payload.clientExtensionResults,
+      clientExtensionResults: payload.client_extension_results as any,
       id: payload.id,
-      rawId: payload.rawId,
+      rawId: payload.raw_id,
       type: "public-key" as const,
       response: {
-        clientDataJSON: payload.clientDataJSON,
-        attestationObject: payload.attestationObject,
+        clientDataJSON: payload.client_data_json,
+        attestationObject: payload.attestation_object,
         transports: payload.transports as any,
       },
     };
@@ -157,26 +157,26 @@ export const verifyAuthResponse = async (email: string, payload: VerifyAuthOptio
 
     if (!user) throw new AppError("User not found", 404);
 
-    const passkey = user.passkeys.find((p) => p.credentialID === payload.id);
+    const passkey = user.passkeys.find((p) => p.credential_id === payload.id);
 
     if (!passkey) throw new AppError("Passkey not recognized", 401);
 
     const credential: WebAuthnCredential = {
       counter: passkey.counter,
-      id: passkey.credentialID,
-      publicKey: new Uint8Array(passkey.publicKey.buffer),
+      id: passkey.credential_id,
+      publicKey: new Uint8Array(passkey.public_key.buffer),
       transports: passkey.transports as AuthenticatorTransportFuture[],
     };
 
     const response: AuthenticationResponseJSON = {
-      clientExtensionResults: payload.clientExtensionResults,
+      clientExtensionResults: payload.client_extension_results as any,
       id: payload.id,
-      rawId: payload.rawId,
+      rawId: payload.raw_id,
       type: "public-key" as const,
       response: {
-        clientDataJSON: payload.response.clientDataJSON,
+        clientDataJSON: payload.response.client_data_json,
         signature: payload.response.signature,
-        authenticatorData: payload.response.authenticatorData,
+        authenticatorData: payload.response.authenticator_data,
       } as AuthenticatorAssertionResponseJSON,
     };
 
@@ -205,8 +205,8 @@ export const verifyAuthResponse = async (email: string, payload: VerifyAuthOptio
 
       return {
         authenticationInfo: verification.authenticationInfo,
-        access_token: tokens.accessToken,
-        refresh_token: tokens.refreshToken,
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
       };
     }
 

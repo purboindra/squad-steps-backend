@@ -79,11 +79,11 @@ export const verifyAuthResponse = async (req: Request, res: Response, next: Next
 
     const response = await service.verifyAuthResponse(email, options);
 
-    const { access_token, refresh_token } = response;
+    const { accessToken, refreshToken } = response;
 
     const data = {
-      access_token,
-      refresh_token,
+      access_token: accessToken,
+      refresh_token: refreshToken,
     };
 
     logger.info({ data }, "Data to be sent to client");

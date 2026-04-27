@@ -7,3 +7,11 @@ export const generateTokenSchema = z.object({
 });
 
 export type GenerateTokenPayload = z.infer<typeof generateTokenSchema>;
+
+export const rotateTokenSchema = z.object({
+  refresh_token: z.string().refine((value) => typeof value === "string", { message: "Refresh token must be a string" }),
+}).transform((data) => ({
+  refreshToken: data.refresh_token,
+}));
+
+export type RotateTokenPayload = z.infer<typeof rotateTokenSchema>;

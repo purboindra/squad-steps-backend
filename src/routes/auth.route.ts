@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as authController from "../controllers/auth.controller";
-import { generateTokenSchema } from "../schemas/token.schema";
+import { generateTokenSchema, rotateTokenSchema } from "../schemas/token.schema";
 import { validate } from "../schemas/validate";
 
 const router = Router();
@@ -11,6 +11,14 @@ router.post(
     body: generateTokenSchema,
   }),
   authController.generateToken,
+);
+
+router.post(
+  "/refresh-token",
+  validate({
+    body: rotateTokenSchema,
+  }),
+  authController.rotateToken,
 );
 
 export default router;
