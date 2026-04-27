@@ -169,14 +169,14 @@ export const verifyAuthResponse = async (email: string, payload: VerifyAuthOptio
     };
 
     const response: AuthenticationResponseJSON = {
-      clientExtensionResults: payload.client_extension_results as any,
+      clientExtensionResults: payload.clientExtensionResults,
       id: payload.id,
-      rawId: payload.raw_id,
+      rawId: payload.rawId,
       type: "public-key" as const,
       response: {
-        clientDataJSON: payload.response.client_data_json,
+        clientDataJSON: payload.response.clientDataJSON,
         signature: payload.response.signature,
-        authenticatorData: payload.response.authenticator_data,
+        authenticatorData: payload.response.authenticatorData,
       } as AuthenticatorAssertionResponseJSON,
     };
 
