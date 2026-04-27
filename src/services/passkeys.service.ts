@@ -57,13 +57,13 @@ export const verifyRegisterOptions = async (payload: VerifyRegisterOptionsPayloa
     }
 
     const response: RegistrationResponseJSON = {
-      clientExtensionResults: payload.client_extension_results as any,
+      clientExtensionResults: payload.clientExtensionResults,
       id: payload.id,
-      rawId: payload.raw_id,
+      rawId: payload.rawId,
       type: "public-key" as const,
       response: {
-        clientDataJSON: payload.client_data_json,
-        attestationObject: payload.attestation_object,
+        clientDataJSON: payload.clientDataJSON,
+        attestationObject: payload.attestationObject,
         transports: payload.transports as any,
       },
     };
@@ -157,14 +157,14 @@ export const verifyAuthResponse = async (email: string, payload: VerifyAuthOptio
 
     if (!user) throw new AppError("User not found", 404);
 
-    const passkey = user.passkeys.find((p) => p.credential_id === payload.id);
+    const passkey = user.passkeys.find((p) => p.credentialID === payload.id);
 
     if (!passkey) throw new AppError("Passkey not recognized", 401);
 
     const credential: WebAuthnCredential = {
       counter: passkey.counter,
-      id: passkey.credential_id,
-      publicKey: new Uint8Array(passkey.public_key.buffer),
+      id: passkey.credentialID,
+      publicKey: new Uint8Array(passkey.publicKey.buffer),
       transports: passkey.transports as AuthenticatorTransportFuture[],
     };
 
